@@ -15,7 +15,7 @@ struct Grid_s
 {
 	PVector<int> pos = { 0,0 };
 	PVector<int> vSize = { 512,512 };
-	PVector<int> vNumbers = { 10, 10 }; //-xy to +xy
+	int32_t vNumbers = { 10 }; //-xy to +xy
 	bool bShowNumbers = true;
 };
 
@@ -42,6 +42,10 @@ public:
 	void OnRenderGrid(const Grid& grid);
 	void RenderNumbers();
 	void RenderGrid();
+	void DrawArrow( PVector<float> s,  PVector<float> e, const Pixel& col = COL::RED, int32_t thickness = 1);
+	void DrawVectorTriangle(const PVector<int>& s, const PVector<int>& e);
+
+	PVector<int> TranslateGridToCoordinates(PVector<float> gridpos);
 	Grid vGrid;
 
 };

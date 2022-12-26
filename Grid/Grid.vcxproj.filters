@@ -27,9 +27,21 @@
     <ClInclude Include="typedefs.hpp">
       <Filter>Source Files</Filter>
     </ClInclude>
+    <ClInclude Include="abra.hpp">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="qmath.hpp">
+      <Filter>Source Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="App.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="abra.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="qmath.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

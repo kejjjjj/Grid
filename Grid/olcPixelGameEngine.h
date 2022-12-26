@@ -1021,6 +1021,10 @@ namespace olc
 		// Draws a circle located at (x,y) with radius
 		void DrawCircle(int32_t x, int32_t y, int32_t radius, Pixel p = olc::WHITE, uint8_t mask = 0xFF);
 		void DrawCircle(const olc::vi2d& pos, int32_t radius, Pixel p = olc::WHITE, uint8_t mask = 0xFF);
+		void DrawThickLine(int x1, int y1, int x2, int y2, int thickness, const olc::Pixel& color, bool is_smooth = false);
+		void DrawThickLine(const olc::vi2d& pos1, const olc::vi2d& pos2, int thickness, const olc::Pixel& color, bool is_smooth = false);
+
+
 		// Fills a circle located at (x,y) with radius
 		void FillCircle(int32_t x, int32_t y, int32_t radius, Pixel p = olc::WHITE);
 		void FillCircle(const olc::vi2d& pos, int32_t radius, Pixel p = olc::WHITE);
@@ -2074,7 +2078,30 @@ namespace olc
 			}
 		}
 	}
+	void PixelGameEngine::DrawThickLine(const olc::vi2d& pos1, const olc::vi2d& pos2, int thickness, const olc::Pixel& color, bool is_smooth)
+	{
+		DrawThickLine(pos1.x, pos1.y, pos2.x, pos2.y, thickness, color, is_smooth);
+	}
+	void PixelGameEngine::DrawThickLine(int x1, int y1, int x2, int y2, int thickness, const olc::Pixel& color, bool is_smooth) {
+		olc::vf2d direction = { (float)(x2 - x1), (float)(y2 - y1) };
+		olc::vf2d axis_proj = direction.perp();
+		float len = axis_proj.mag();
+		if (len > 0.001f) axis_proj /= len;
+		axis_proj *= thickness;
 
+		olc::vi2d t1 = olc::vi2d(x1, y1) + axis_proj / 2;
+		olc::vi2d t2 = t1 - axis_proj;
+		olc::vi2d t3 = olc::vi2d(x2, y2) + axis_proj / 2;
+		olc::vi2d t4 = t3 - axis_proj;
+
+		FillTriangle(t1.x, t1.y, t2.x, t2.y, t3.x, t3.y, color);
+		FillTriangle(t2.x, t2.y, t3.x, t3.y, t4.x, t4.y, color);
+
+		if (is_smooth) {
+			FillCircle(x1, y1, thickness / 2, color);
+			FillCircle(x2, y2, thickness / 2, color);
+		}
+	}
 	void PixelGameEngine::DrawCircle(const olc::vi2d& pos, int32_t radius, Pixel p, uint8_t mask)
 	{ DrawCircle(pos.x, pos.y, radius, p, mask); }
 
