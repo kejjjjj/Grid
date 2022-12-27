@@ -21,6 +21,10 @@ typedef unsigned long UPTR;
 #include <random>
 
 #include "typedefs.hpp"
+#include "shapes.hpp"
+#include "Grid.hpp"
+#include "App.hpp"
+#include "drawing.hpp"
 #include "abra.hpp"
 #include "qmath.hpp"
 #endif

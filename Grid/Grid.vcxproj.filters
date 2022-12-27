@@ -13,6 +13,12 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Source Files\utility">
+      <UniqueIdentifier>{4827ea30-4652-43b5-9c95-926d8c3ca7fd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\general">
+      <UniqueIdentifier>{b9f1aa77-16b4-456b-baa8-795442d7a833}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="olcPixelGameEngine.h">
@@ -24,25 +30,46 @@
     <ClInclude Include="App.hpp">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="typedefs.hpp">
+    <ClInclude Include="Grid.hpp">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="abra.hpp">
-      <Filter>Source Files</Filter>
+    <ClInclude Include="typedefs.hpp">
+      <Filter>Source Files\general</Filter>
     </ClInclude>
     <ClInclude Include="qmath.hpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\general</Filter>
+    </ClInclude>
+    <ClInclude Include="shapes.hpp">
+      <Filter>Source Files\utility</Filter>
+    </ClInclude>
+    <ClInclude Include="drawing.hpp">
+      <Filter>Source Files\utility</Filter>
+    </ClInclude>
+    <ClInclude Include="abra.hpp">
+      <Filter>Source Files\utility</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="App.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="abra.cpp">
+    <ClCompile Include="olcPixelGameEngine.cpp">
+      <Filter>Header Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Grid.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="qmath.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\general</Filter>
+    </ClCompile>
+    <ClCompile Include="shapes.cpp">
+      <Filter>Source Files\utility</Filter>
+    </ClCompile>
+    <ClCompile Include="drawing.cpp">
+      <Filter>Source Files\utility</Filter>
+    </ClCompile>
+    <ClCompile Include="abra.cpp">
+      <Filter>Source Files\utility</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

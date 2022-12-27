@@ -1119,7 +1119,7 @@ namespace olc
 		int32_t TextEntryGetCursor() const;
 		bool IsTextEntryEnabled() const;
 
-
+		PixelGameEngine* GetPointerToClass() { return this; }
 
 	private:
 		void UpdateTextEntry();
