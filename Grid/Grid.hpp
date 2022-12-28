@@ -39,17 +39,27 @@ struct Grid
 
 	void PushShape(GridShape shape) { shapes.push_back(shape); }
 
-	PVector<int> TranslateGridToCoordinates(PVector<float> gridpos);
+	PVector<int> TranslateGridToCoordinates(PVector<float>& gridpos, const bool clamp = false);
+	PVector<float> TranslateCoordinatesToGrid(const PVector<int>& coordinates);
+	PVector<int> GridToCoord(PVector<float>& gridpos, const bool clamp = false);
+	int32_t GridToCoord(const float gridpos, bool horizontal, const bool clamp = false);
+
+
 	int32_t TranslateGridToCoordinates(const float gridpos, bool horizontal);
+	int32_t TranslateGridToCoordinates(float& gridpos, bool horizontal, const bool clamp = false);
 	void DrawArrow(PVector<float> s, PVector<float> e, const Pixel& col = COL::RED, int32_t thickness = 1);
 	GridShape* FindShapeFromBounds(const PVector<int>& pos);
 
 	Grid_s data;
-private:
 	olc::PixelGameEngine* engine;
+
+private:
 	PVector<int> iGridSpacing;
 	std::vector<GridShape> shapes;
 
+	void Tests();
+	void t_LinearAlgebra();
+	void t_Circles();
 };
 
 #endif

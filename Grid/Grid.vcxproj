@@ -166,6 +166,7 @@
     <ClCompile Include="olcPixelGameEngine.cpp" />
     <ClCompile Include="qmath.cpp" />
     <ClCompile Include="shapes.cpp" />
+    <ClCompile Include="tests.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

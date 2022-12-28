@@ -10,17 +10,9 @@
 float VectorAngle(const PVector<float>& s, const PVector<float> e);
 float VectorAngle(const PVector<int>& e); //where s = 0,0 
 float AngleFromAxis(const PVector<int>& pos, float angle);
-template <typename T> 
-T clamp(T val, const T min, const T max)
-{
-
-	if (val < min)	val = min;
-	if (val > max)	val = max;
-
-	return val;
-
-}
-
+PVector<float> VectorLinearCombination(const PVector<float>& a, const PVector<float>& b, const float scalarX = .5f, const float scalarY = .5f);
+PVector<float> VectorConvexCombination(const PVector<float>& a, const PVector<float>& b, const float alpha, const float beta);
+bool VectorSimultaneousEquation(const PVector<float>& a, const PVector<float>& b, const PVector<float>& linearcombination, PVector<float>& out);
 inline bool MouseHovered(const PVector<int>& mins, const PVector<int>& maxs)
 {
 	tagPOINT p;

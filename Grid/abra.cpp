@@ -18,35 +18,59 @@ float VectorAngle(const PVector<int>& e)  //where s = 0,0
 	//			opposite	  adjacent
 	return atan((float)e.y / (float)e.x) * 180.f / PI;
 }
-float AngleFromAxis(const PVector<int>& pos, float angle)
+PVector<float> VectorLinearCombination(const PVector<float>& a, const PVector<float>& b, const float scalarX, const float scalarY)
 {
-	//angle = fmodf(angle, 90);
+	return a * scalarX + b * scalarY;
+}
+PVector<float> VectorConvexCombination(const PVector<float>& a, const PVector<float>& b, const float alpha, const float beta)
+{
+	if (alpha + beta != 1)
+		return{};
 
-	if (pos.x > 0 && pos.y > 0) {
-		//top right - +x +y
-		//0-90
-		return angle < 0 ? -angle : angle;
-	}
-	else if (pos.x < 0 && pos.y > 0) {
-		//top left - -x +y
-		//90 - 180
-		return angle < 0 ? -angle + 90 : angle + 90;
+	return { a * alpha + b * beta };
+}
 
-	}
-	else if (pos.x < 0 && pos.y < 0) {
-		//bottom left - -x -y
-		//-180 - -90
-		angle = angle > 0 ? -angle - 90 : angle - 90;
-		angle += 180;
-		angle = (angle + 180 % 360);
-	}
-	else if (pos.x > 0 && pos.y < 0) {
-		//bottom right - +x -y
-		//-90 - 0
-		angle = angle > 0 ? -angle : angle;
-		angle += 180;
-		angle = (angle + 180 % 360);
-	}
+bool VectorSimultaneousEquation(const PVector<float>& x, const PVector<float>& y, const PVector<float>& linearcombination, PVector<float>& out)
+{
+	//printf("%.1f = %.0fx + %.0fy\n",linearcombination.x, x.x, x.y);
+	//printf("%.1f = %.0f + %.0fy\n\n",linearcombination.y, y.x, y.y);
 
-	return angle;
+	//scale both until equal X
+	const float scaleX = (x.x * y.x) / x.x;
+	const float scaleY = (x.x * y.x) / y.x;
+
+	//subtract equations and eliminate X
+	const float subtractedX = x.x * scaleX - y.x * scaleY;
+	const float subtractedY = x.y * scaleX - y.y * scaleY;
+
+	const float resultA = linearcombination.x * scaleX - linearcombination.y * scaleY;
+
+	//printf("scale {%.1f, %.1f}\n\n", scaleX, scaleY);
+	//printf("  %.1f = %.1fx + %.1fy\n", linearcombination.x * scaleX,x.x * scaleX, x.y * scaleX);
+	//printf("- %.1f = %.1fx + %.1fy\n", linearcombination.y * scaleY, y.x * scaleY, y.y * scaleY);
+	//printf("--------------\n");
+	//printf("   %.1f = %.1fx + %.1fy\n\n", resultA, subtractedX, subtractedY);
+
+	if (subtractedY == 0)
+		return false;
+
+	const float solvedY = resultA / subtractedY;
+
+	////y found
+	//printf("y =  %.1f / %.1f\n", resultA, subtractedY);
+	//printf("y =  %.1f\n\n", solvedY);
+
+	////find x
+	//printf("%.1f = %.1fx + %.1f * %.1f\n", linearcombination.y, y.x, y.y, solvedY);
+	//printf("%.1f = %.1fx + %.1f\n", linearcombination.y, y.x, y.y * solvedY);
+	//printf("%.1f - %.1f = %.1fx\n", linearcombination.y, y.y * solvedY, y.x);
+	//printf("%.1f = %.1fx\n\n", linearcombination.y - y.y * solvedY, y.x);
+
+	const float solvedX = (linearcombination.y - y.y * solvedY) / y.x;
+	//printf("x = %.1f / %.1f\n", linearcombination.y - y.y * solvedY, y.x);
+	//printf("x = %.1f\n", solvedX);
+
+	out = { solvedX, solvedY };
+
+	return true;
 }

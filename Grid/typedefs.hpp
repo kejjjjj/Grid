@@ -5,7 +5,7 @@
 
 #include "pch.h"
 
-template <typename T>
+template <class T>
 struct PVector
 {
 
@@ -14,6 +14,7 @@ struct PVector
 	constexpr PVector() { x = 0; y = 0; }
 	constexpr PVector(const T& v) { x = v; y = v; }
 	constexpr PVector(const T& a, const T& b) { x = a; y = b; }
+	//constexpr explicit PVector(const PVector<int>& v) { x = (int)v.x, y = (int)v.y; }
 
 	PVector operator+(const PVector& v) const { return { x + v.x, y + v.y }; }
 	PVector operator-(const PVector& v) const { return { x - v.x, y - v.y }; }
@@ -37,6 +38,8 @@ struct PVector
 	PVector operator-=(const T& v) { return { x -= v, y -= v }; }
 	PVector operator*=(const T& v) { return { x *= v, y *= v }; }
 	PVector operator/=(const T& v) { return { x /= v, y /= v }; }
+
+
 
 	float mag() const {
 		return sqrtf(x * x + y * y);
@@ -80,6 +83,7 @@ struct PVector
 	PVector fromAngle(float angle) {
 		return { cos(angle), sin(angle) };
 	}
+
 };
 struct Pixel
 {

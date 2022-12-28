@@ -17,17 +17,64 @@ bool Grid::Create(const Grid_s& grid)
 	data = grid;
 	return true;
 }
-
-PVector<int> Grid::TranslateGridToCoordinates(PVector<float> gridpos)
+PVector<float> Grid::TranslateCoordinatesToGrid(const PVector<int>& c)
 {
-	//gridpos.clamp(-grid.data.vNumbers, grid.data.vNumbers);
+	const auto corner = data.pos + 20 + data.vSize;
+	PVector<float> center = { (float)corner.x, (float)corner.y }; center /= 2;
+
+	PVector<float> coordinates = { (float)c.x, (float)c.y };
+
+	coordinates.x = std::clamp(c.x, data.pos.x, corner.x);
+	coordinates.y = std::clamp(c.y, data.pos.y, corner.y);
+
+
+	coordinates.x = (coordinates.x - center.x) / iGridSpacing.x;
+	coordinates.y = (coordinates.y - center.y) / iGridSpacing.y;
+
+	coordinates.y *= -1;
+	coordinates.clamp(-(float)data.vNumbers, (float)data.vNumbers);
+	return{
+		coordinates
+	};
+}
+PVector<int> Grid::TranslateGridToCoordinates(PVector<float>& gridpos, const bool clamp)
+{
+	if(clamp)
+		gridpos.clamp(-data.vNumbers, data.vNumbers);
 
 	return {
 		data.pos.x + (data.vSize.x / 2 - 10) + int((gridpos.x * (float)iGridSpacing.x)),
 		data.pos.y + (data.vSize.y / 2 - 10) + int((gridpos.y * (float)-iGridSpacing.y)) };
 }
+PVector<int> Grid::GridToCoord(PVector<float>& gridpos, const bool clamp)
+{
+	if (clamp)
+		gridpos.clamp(-data.vNumbers, data.vNumbers);
+
+	return{ 
+		int((gridpos.x * (float)iGridSpacing.x)), 
+		int((gridpos.y * (float)-iGridSpacing.y)) };
+}
+int32_t Grid::GridToCoord(const float gridpos, bool horizontal, const bool clamp)
+{
+	if (horizontal)
+		return int((gridpos * (float)iGridSpacing.x));
+
+	return int((gridpos * (float)iGridSpacing.y));
+
+}
 int32_t Grid::TranslateGridToCoordinates(const float gridpos, bool horizontal)
 {
+	if (horizontal) {
+		return data.pos.x + (data.vSize.x / 2 - 10) + int((gridpos * (float)iGridSpacing.x));
+
+	}
+	return data.pos.y + (data.vSize.y / 2 - 10) + int((gridpos * (float)-iGridSpacing.y));
+}
+int32_t Grid::TranslateGridToCoordinates(float& gridpos, bool horizontal, const bool clamp)
+{
+	if (clamp)
+		gridpos = std::clamp(gridpos, -(float)data.vNumbers, (float)data.vNumbers);
 	if (horizontal) {
 		return data.pos.x + (data.vSize.x / 2 - 10) + int((gridpos * (float)iGridSpacing.x));
 
@@ -76,20 +123,30 @@ void Grid::RenderGrid()
 void Grid::OnKeyEvent()
 {
 	static bool clicked = false;
-
+	static GridShape* shape = 0;
+	static PVector<float> ClickPos;
 	if (engine->GetMouse(olc::Mouse::LEFT).bPressed) {
 
-		GridShape* shape = FindShapeFromBounds(GetMousePos());
+		shape = FindShapeFromBounds(GetMousePos());
 		if (shape) {
+			ClickPos = TranslateCoordinatesToGrid(GetMousePos());
 			clicked = true;
 		}
 	}
-	else if(!engine->GetMouse(olc::Mouse::LEFT).bHeld)
+	else if (!engine->GetMouse(olc::Mouse::LEFT).bHeld) {
 		clicked = false;
+		shape = 0;
+	}
 	
-	if (clicked && engine->GetMouse(olc::Mouse::LEFT).bHeld) {
+	if (shape && engine->GetMouse(olc::Mouse::LEFT).bHeld) {
 
-		engine->DrawString({ 400, 10 }, "hello!", olc::BLACK);
+		auto difference = TranslateCoordinatesToGrid(GetMousePos()) - ClickPos;
+
+		if (shape->OnDeltaMove(difference)) {
+			ClickPos = TranslateCoordinatesToGrid(GetMousePos());
+		}
+
+		engine->DrawString({ 400, 10 }, std::format("delta: {:.1f}, {:.1f}", difference.x, difference.y), olc::BLACK);
 
 	}
 
@@ -120,34 +177,13 @@ void Grid::OnRenderGrid()
 	RenderNumbers();
 	OnKeyEvent();
 
-	PVector<float> arrow1 = { shapes[0].maxs};
-	PVector<float> arrow2 = { shapes[1].maxs};
+	//for (auto& i : shapes) {
+	//	auto hitbox = i.GetHitboxOrigin();
+	//	auto org = TranslateGridToCoordinates(hitbox);
+	//	engine->DrawCircle({ org.x, org.y }, 10, olc::RED);
+	//}
 
-
-
-	DrawArrow({ 0 , 0 }, { arrow1 }, COL::GREEN, 2);
-	DrawArrow({ 0 , 0 }, { arrow2}, COL::GREEN, 2);
-
-
-	auto linearA = PVector<float>{ arrow1 } / 2;
-	auto linearB = PVector<float>{ arrow2 } / 2;
-
-	auto result = linearA + linearB;
-
-	engine->SetPixelMode(olc::Pixel::ALPHA);
-	engine->FillTriangle(
-		{ TranslateGridToCoordinates(0, true), TranslateGridToCoordinates(0, false) },
-		{ TranslateGridToCoordinates(arrow1.x, true), TranslateGridToCoordinates(arrow1.y, false) },
-		{ TranslateGridToCoordinates(result.x, true), TranslateGridToCoordinates(result.y, false) }, { 255,0,255,50 });
-
-	engine->FillTriangle(
-		{ TranslateGridToCoordinates(0, true), TranslateGridToCoordinates(0, false) },
-		{ TranslateGridToCoordinates(arrow2.x, true), TranslateGridToCoordinates(arrow2.y, false) },
-		{ TranslateGridToCoordinates(result.x, true), TranslateGridToCoordinates(result.y, false) }, { 255,0,255,50 });
-	engine->SetPixelMode(olc::Pixel::NORMAL);
-
-	DrawArrow({ 0,0 }, result, COL::RED, 2);
-
+	Tests();
 }
 
 bool Grid::OnMouseHovered(PVector<float>& s, PVector<float>& e)
@@ -164,10 +200,10 @@ bool Grid::OnMouseHovered(PVector<float>& s, PVector<float>& e)
 
 void Grid::DrawArrow(PVector<float> s, PVector<float> e, const Pixel& col, int32_t thickness)
 {
+	
 
-
-	auto start = TranslateGridToCoordinates(s);
-	auto end = TranslateGridToCoordinates(e);
+	auto start = TranslateGridToCoordinates(s, true);
+	auto end = TranslateGridToCoordinates(e, true);
 
 	PVector<int> vLeft;
 
