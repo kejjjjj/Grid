@@ -29,20 +29,6 @@ bool App::OnUserCreate()
 
 	//arrows
 	GridShape shape(&vGrid, eShape::ARROW, data); vGrid.PushShape(shape);
-
-	//data.mins = { 5 -5 };
-	//data.maxs = { -3, 10 };
-
-	//data.hitbox_mins = { data.maxs.x - 0.2f, data.maxs.y + 0.2f };
-	//data.hitbox_maxs = { data.maxs.x + 0.2f, data.maxs.y - 0.2f };
-
-	//GridShape shape2(&vGrid, eShape::ARROW, data, COL::BLACK); vGrid.PushShape(shape);
-
-	//vGrid.PushShape(shape);
-	//vGrid.PushShape(shape2);
-
-	//circles
-	//sShape<float> data{};
 	
 	memset(&data, 0, sizeof(sShape<float>));
 
@@ -51,6 +37,7 @@ bool App::OnUserCreate()
 	data.faces = 16;
 	data.origin = { 0,0 };
 	data.col = COL::RED;
+	data.color_fill = true;
 
 	GridShape shape3(&vGrid, eShape::CIRCLE, data);
 

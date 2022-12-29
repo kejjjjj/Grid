@@ -20,7 +20,9 @@ typedef unsigned long UPTR;
 #define COS(x) (cos(DEG2RAD((x))))
 #define TAN(x) (tan(DEG2RAD(x)))
 
-
+#define ASIN(x) (asin(DEG2RAD((x))))
+#define ACOS(x) (acos(DEG2RAD((x))))
+#define ATAN(x) (atan(DEG2RAD(x)))
 
 #include <Windows.h>
 #include <math.h>

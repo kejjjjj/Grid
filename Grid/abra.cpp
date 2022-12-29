@@ -29,7 +29,10 @@ PVector<float> VectorConvexCombination(const PVector<float>& a, const PVector<fl
 
 	return { a * alpha + b * beta };
 }
-
+float VectorAngleDifference(const PVector<float>& a, const PVector<float>& b)
+{
+	return acos(a.dot(b) / (a.mag() * b.mag())) * 180.f / PI;
+}
 bool VectorSimultaneousEquation(const PVector<float>& x, const PVector<float>& y, const PVector<float>& linearcombination, PVector<float>& out)
 {
 	//printf("%.1f = %.0fx + %.0fy\n",linearcombination.x, x.x, x.y);

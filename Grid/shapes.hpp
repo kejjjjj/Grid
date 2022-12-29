@@ -30,6 +30,7 @@ struct sShape
 
 	//general
 	Pixel col;
+	bool color_fill = false;
 };
 
 class Shape

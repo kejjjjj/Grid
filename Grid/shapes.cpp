@@ -149,14 +149,14 @@ void GridShape::DrawCircle()
 		n.x = org.x + (SIN(i + angleIncr) * amount);
 		n.y = org.y - (COS(i + angleIncr) * amount);
 
-		// A STAR
-		//n.x = org.x + (SIN(i + 135) * amount);
-		//n.y = org.y - (COS(i + 135) * amount);
+		if(d.color_fill)
+			vGrid->engine->FillTriangle({ c.x, c.y }, { n.x, n.y }, { org.x, org.y }, { d.col.r, d.col.g, d.col.b, d.col.a });
 
 		vGrid->engine->DrawLine({ c.x, c.y }, { n.x, n.y }, { d.col.r, d.col.g, d.col.b, d.col.a });
 	}
 	
-	vGrid->engine->DrawString({ 100, 600 }, std::format("{},{}", org.x, org.y), olc::BLACK);
+
+	//vGrid->engine->DrawString({ 100, 600 }, std::format("{},{}", org.x, org.y), olc::BLACK);
 
 
 
